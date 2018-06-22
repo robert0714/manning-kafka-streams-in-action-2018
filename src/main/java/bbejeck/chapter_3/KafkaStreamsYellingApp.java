@@ -26,6 +26,7 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Printed;
 import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.kstream.ValueMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,7 @@ public class KafkaStreamsYellingApp {
         KStream<String, String> simpleFirstStream = builder.stream("src-topic", Consumed.with(stringSerde, stringSerde));
 
 
-        KStream<String, String> upperCasedStream = simpleFirstStream.mapValues(String::toUpperCase);
+        KStream<String, String> upperCasedStream = simpleFirstStream.mapValues((ValueMapper<String, String>) String::toUpperCase);
 
         upperCasedStream.to( "out-topic", Produced.with(stringSerde, stringSerde));
         upperCasedStream.print(Printed.<String, String>toSysOut().withLabel("Yelling App"));

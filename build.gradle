@@ -23,6 +23,9 @@ description = "Source Code for the Kafka Streams in Action Book"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+ext {
+    kafkaVersion = '1.1.0'
+}
 
 task runZmartAdvancedChapter_3(type: JavaExec){
     classpath sourceSets.main.runtimeClasspath
@@ -168,14 +171,14 @@ dependencies {
     compile group: 'com.h2database', name:'h2', version: '1.4.196'
     compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.1'
 
-    compile group: 'org.apache.kafka', name: 'connect-api', version: '1.0.0'
+    compile group: 'org.apache.kafka', name: 'connect-api', version: kafkaVersion
 
-    compile group: 'org.apache.kafka', name:'kafka-streams', version: '1.0.0'
-    compile group: 'org.apache.kafka', name:'kafka-clients', version: '1.0.0'
+    compile group: 'org.apache.kafka', name:'kafka-streams', version: kafkaVersion
+    compile group: 'org.apache.kafka', name:'kafka-clients', version: kafkaVersion
 
 
     compile group: 'org.rocksdb', name: 'rocksdbjni', version: '5.3.6'
-    
+
 
     compile (group: 'com.github.javafaker', name: 'javafaker', version: '0.12') {
         exclude group:'ch.qos.logback'
@@ -188,14 +191,14 @@ dependencies {
 
     testCompile group:'org.hamcrest', name:'hamcrest-junit', version:'2.0.0.0'
 
-    testCompile group:'org.apache.kafka', name:'kafka-streams', version:'1.0.0', classifier: 'test'
-    testCompile group:'org.apache.kafka', name:'kafka-clients', version:'1.0.0', classifier: 'test'
+    testCompile group: 'org.apache.kafka', name: 'kafka-streams', version: kafkaVersion, classifier: 'test'
+    testCompile group: 'org.apache.kafka', name: 'kafka-clients', version: kafkaVersion, classifier: 'test'
 
-    testCompile (group:'org.apache.kafka', name:'kafka_2.12', version:'1.0.0') {
+    testCompile(group: 'org.apache.kafka', name: 'kafka_2.12', version: kafkaVersion) {
         exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     }
 
-    testCompile (group:'org.apache.kafka', name:'kafka_2.12', version:'1.0.0', classifier: 'test') {
+    testCompile(group: 'org.apache.kafka', name: 'kafka_2.12', version: kafkaVersion, classifier: 'test') {
         exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     }
 
