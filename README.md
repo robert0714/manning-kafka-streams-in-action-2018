@@ -1,8 +1,6 @@
 ### Source Code for Kafka Streams in Action 
 [Kafka Streams in Action](https://www.manning.com/books/kafka-streams-in-action) by William P. Bejeck Jr.
 
-book by Bill Bejeck
-
 #### Chapter 9 updates
 
 1. Kafka and Kafka Streams are now at version 1.0!
