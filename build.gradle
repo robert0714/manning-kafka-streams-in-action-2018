@@ -24,7 +24,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 ext {
-    kafkaVersion = '1.1.0'
+    kafkaVersion = '1.1.1'
 }
 
 task runZmartAdvancedChapter_3(type: JavaExec){
