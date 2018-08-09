@@ -50,11 +50,11 @@ public class StockPerformanceTransformer implements Transformer<String, StockTra
         return null;
     }
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public KeyValue<String, StockPerformance> punctuate(long l) {
-        throw new UnsupportedOperationException("Should use the punctuate method on Punctuator");
-    }
+//    @Override
+//    @SuppressWarnings("deprecation")
+//    public KeyValue<String, StockPerformance> punctuate(long l) {
+//        throw new UnsupportedOperationException("Should use the punctuate method on Punctuator");
+//    }
 
     @Override
     public void close() {
