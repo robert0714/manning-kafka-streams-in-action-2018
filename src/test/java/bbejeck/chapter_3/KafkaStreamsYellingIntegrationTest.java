@@ -34,7 +34,7 @@ public class KafkaStreamsYellingIntegrationTest {
     private final Time mockTime = Time.SYSTEM;
 
     private KafkaStreams kafkaStreams;
-    private StreamsConfig streamsConfig;
+    private Properties properties;
     private Properties producerConfig;
     private Properties consumerConfig;
 
@@ -63,8 +63,6 @@ public class KafkaStreamsYellingIntegrationTest {
                 new Properties());
         properties.put(IntegrationTestUtils.INTERNAL_LEAVE_GROUP_ON_CLOSE, true);
         
-        streamsConfig = new StreamsConfig(properties);
-
         producerConfig = TestUtils.producerConfig(EMBEDDED_KAFKA.bootstrapServers(),
                 StringSerializer.class,
                 StringSerializer.class);
@@ -91,7 +89,7 @@ public class KafkaStreamsYellingIntegrationTest {
                 .mapValues(String::toUpperCase)
                 .to(OUT_TOPIC);
 
-        kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamsConfig);
+        kafkaStreams = new KafkaStreams(streamsBuilder.build(), properties);
         kafkaStreams.start();
 
         List<String> valuesToSendList = Arrays.asList("this", "should", "yell", "at", "you");

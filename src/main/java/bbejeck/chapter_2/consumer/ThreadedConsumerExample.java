@@ -5,6 +5,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -42,7 +43,7 @@ public class ThreadedConsumerExample {
                 consumer = new KafkaConsumer<>(properties);
                 consumer.subscribe(Collections.singletonList("test-topic"));
                 while (!doneConsuming) {
-                    ConsumerRecords<String, String> records = consumer.poll(5000);
+                    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(5000));
                     for (ConsumerRecord<String, String> record : records) {
                         String message = String.format("Consumed: key = %s value = %s with offset = %d partition = %d",
                                 record.key(), record.value(), record.offset(), record.partition());
