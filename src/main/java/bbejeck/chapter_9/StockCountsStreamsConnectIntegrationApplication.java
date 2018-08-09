@@ -6,10 +6,10 @@ import bbejeck.util.serde.StreamsSerdes;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.Serialized;
@@ -28,7 +28,6 @@ public class StockCountsStreamsConnectIntegrationApplication {
     public static void main(String[] args) throws Exception {
 
 
-        StreamsConfig streamsConfig = new StreamsConfig(getProperties());
         Serde<String> stringSerde = Serdes.String();
         Serde<StockTransaction> stockTransactionSerde = StreamsSerdes.StockTransactionSerde();
         Serde<Long> longSerde = Serdes.Long();
@@ -46,7 +45,7 @@ public class StockCountsStreamsConnectIntegrationApplication {
                              .to( "stock-counts", Produced.with(stringSerde, longSerde));
 
 
-        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), streamsConfig);
+        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), getProperties());
         CountDownLatch doneSignal = new CountDownLatch(1);
 
         Runtime.getRuntime().addShutdownHook(new Thread(()-> {

@@ -25,18 +25,11 @@ import bbejeck.util.serde.StreamsSerdes;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.JoinWindows;
-import org.apache.kafka.streams.kstream.Joined;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KeyValueMapper;
-import org.apache.kafka.streams.kstream.Predicate;
-import org.apache.kafka.streams.kstream.Printed;
-import org.apache.kafka.streams.kstream.ValueJoiner;
+import org.apache.kafka.streams.kstream.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +43,6 @@ public class KafkaStreamsJoinsApp {
 
     public static void main(String[] args) throws Exception {
 
-        StreamsConfig streamsConfig = new StreamsConfig(getProperties());
         StreamsBuilder builder = new StreamsBuilder();
 
 
@@ -92,7 +84,7 @@ public class KafkaStreamsJoinsApp {
         MockDataProducer.producePurchaseData();
         
         LOG.info("Starting Join Examples");
-        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), streamsConfig);
+        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), getProperties());
         kafkaStreams.start();
         Thread.sleep(65000);
         LOG.info("Shutting down the Join Examples now");

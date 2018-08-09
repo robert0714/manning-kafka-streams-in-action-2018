@@ -11,22 +11,8 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.Aggregator;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Materialized;
-import org.apache.kafka.streams.kstream.Produced;
-import org.apache.kafka.streams.kstream.Serialized;
-import org.apache.kafka.streams.kstream.SessionWindows;
-import org.apache.kafka.streams.kstream.TimeWindows;
-import org.apache.kafka.streams.kstream.Windowed;
-import org.apache.kafka.streams.kstream.TimeWindowedDeserializer;
-import org.apache.kafka.streams.kstream.TimeWindowedSerializer;
+import org.apache.kafka.streams.*;
+import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.kstream.internals.WindowedSerializer;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.apache.kafka.streams.state.HostInfo;
@@ -57,7 +43,6 @@ public class StockPerformanceInteractiveQueryApplication {
         Properties properties = getProperties();
         properties.put(StreamsConfig.APPLICATION_SERVER_CONFIG, host+":"+port);
 
-        StreamsConfig streamsConfig = new StreamsConfig(properties);
         Serde<String> stringSerde = Serdes.String();
         Serde<Long> longSerde = Serdes.Long();
         Serde<StockTransaction> stockTransactionSerde = StreamsSerdes.StockTransactionSerde();
@@ -104,7 +89,7 @@ public class StockPerformanceInteractiveQueryApplication {
                 .to("transaction-count", Produced.with(windowedSerde,Serdes.Integer()));
 
 
-        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), streamsConfig);
+        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), getProperties());
         InteractiveQueryServer queryServer = new InteractiveQueryServer(kafkaStreams, hostInfo);
         StateRestoreHttpReporter restoreReporter = new StateRestoreHttpReporter(queryServer);
 

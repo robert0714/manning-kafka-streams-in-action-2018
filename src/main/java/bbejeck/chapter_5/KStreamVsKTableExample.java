@@ -27,10 +27,7 @@ public class KStreamVsKTableExample {
 
     public static void main(String[] args) throws Exception {
 
-        StreamsConfig streamsConfig = new StreamsConfig(getProperties());
-
         StreamsBuilder builder = new StreamsBuilder();
-
 
         KTable<String, StockTickerData> stockTickerTable = builder.table(STOCK_TICKER_TABLE_TOPIC);
         KStream<String, StockTickerData> stockTickerStream = builder.stream(STOCK_TICKER_STREAM_TOPIC);
@@ -43,7 +40,7 @@ public class KStreamVsKTableExample {
 
         MockDataProducer.produceStockTickerData(numberCompanies, iterations);
 
-        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), streamsConfig);
+        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), getProperties());
         LOG.info("KTable vs KStream output started");
         kafkaStreams.cleanUp();
         kafkaStreams.start();
