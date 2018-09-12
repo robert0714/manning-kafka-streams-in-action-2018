@@ -21,6 +21,9 @@ import bbejeck.model.Purchase;
 import bbejeck.model.PurchasePattern;
 import bbejeck.model.RewardAccumulator;
 import bbejeck.util.serde.StreamsSerdes;
+import bbejeck.util.serializer.JsonDeserializer;
+import bbejeck.util.serializer.JsonSerializer;
+
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -47,7 +50,12 @@ public class ZMartKafkaStreamsApp {
 
         StreamsConfig streamsConfig = new StreamsConfig(getProperties());
 
-        Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
+        JsonSerializer<Purchase> purchaseJsonSerializer = new JsonSerializer<>();
+        JsonDeserializer<Purchase> purchaseJsonDeserializer = new JsonDeserializer<>(Purchase.class);
+        
+//        Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
+        Serde<Purchase> purchaseSerde = Serdes.serdeFrom(purchaseJsonSerializer, purchaseJsonDeserializer);
+        
         Serde<PurchasePattern> purchasePatternSerde = StreamsSerdes.PurchasePatternSerde();
         Serde<RewardAccumulator> rewardAccumulatorSerde = StreamsSerdes.RewardAccumulatorSerde();
         Serde<String> stringSerde = Serdes.String();

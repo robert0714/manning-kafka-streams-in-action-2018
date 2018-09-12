@@ -1,0 +1,10 @@
+version: '2'
+services:
+    kafkaserver:
+     container_name:  kafkaService
+     image: spotify/kafka
+#    mem_limit: 1073741824
+     network_mode:  "host"
+#    ports:
+#      - 2181:2181
+#      - 9092:9092

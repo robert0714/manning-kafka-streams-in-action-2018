@@ -28,6 +28,11 @@ public class SimpleProducer {
         properties.put("bootstrap.servers", "localhost:9092");
         properties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         properties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        
+        properties.put("key.converter", "org.apache.kafka.connect.storage.StringConverter");
+        properties.put("value.converter", "org.apache.kafka.connect.json.JsonConverter");
+        properties.put("value.converter.schemas.enable", "false");
+        
         properties.put("acks", "1");
         properties.put("retries", "3");
         properties.put("compression.type", "snappy");
