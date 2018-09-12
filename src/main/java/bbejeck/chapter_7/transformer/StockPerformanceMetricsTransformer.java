@@ -34,14 +34,14 @@ public class StockPerformanceMetricsTransformer implements Transformer<String, S
     public void init(final ProcessorContext processorContext) {
         keyValueStore = (KeyValueStore) processorContext.getStateStore(stocksStateStore);
         this.processorContext = processorContext;
-
+        
         this.processorContext.schedule(5000, PunctuationType.WALL_CLOCK_TIME, this::doPunctuate);
 
 
         final String tagKey = "task-id";
         final String tagValue = processorContext.taskId().toString();
-        final String nodeName = "StockPerformanceProcessor_" + count.getAndIncrement();
-        metricsSensor = processorContext.metrics().addLatencyAndThroughputSensor("transformer-node",
+        final String nodeName = "StockPerformanceProcessor_"+count.getAndIncrement();
+       metricsSensor = processorContext.metrics().addLatencyAndThroughputSensor("transformer-node",
                 nodeName, "stock-performance-calculation",
                 Sensor.RecordingLevel.DEBUG,
                 tagKey,
@@ -62,7 +62,7 @@ public class StockPerformanceMetricsTransformer implements Transformer<String, S
             stockPerformance.updateVolumeStats(stockTransaction.getShares());
             stockPerformance.setLastUpdateSent(Instant.now());
             long end = System.nanoTime();
-
+            
             processorContext.metrics().recordLatency(metricsSensor, start, end);
 
             keyValueStore.put(symbol, stockPerformance);
@@ -85,6 +85,12 @@ public class StockPerformanceMetricsTransformer implements Transformer<String, S
                 }
             }
         }
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public KeyValue<String, StockPerformance> punctuate(long l) {
+        throw new UnsupportedOperationException("Should not call punctuate");
     }
 
     @Override

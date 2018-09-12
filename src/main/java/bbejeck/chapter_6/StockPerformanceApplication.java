@@ -29,6 +29,7 @@ public class StockPerformanceApplication {
     public static void main(String[] args) throws Exception {
 
 
+        StreamsConfig streamsConfig = new StreamsConfig(getProperties());
         Deserializer<String> stringDeserializer = Serdes.String().deserializer();
         Serializer<String> stringSerializer = Serdes.String().serializer();
         Serde<StockPerformance> stockPerformanceSerde = StreamsSerdes.StockPerformanceSerde();
@@ -53,7 +54,7 @@ public class StockPerformanceApplication {
 
         topology.addProcessor("stocks-printer", new KStreamPrinter("StockPerformance"), "stocks-processor");
 
-        KafkaStreams kafkaStreams = new KafkaStreams(topology, getProperties());
+        KafkaStreams kafkaStreams = new KafkaStreams(topology, streamsConfig);
         MockDataProducer.produceStockTransactionsWithKeyFunction(50,50, 25, StockTransaction::getSymbol);
         System.out.println("Stock Analysis App Started");
         kafkaStreams.cleanUp();

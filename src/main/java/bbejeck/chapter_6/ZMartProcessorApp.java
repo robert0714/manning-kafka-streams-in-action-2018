@@ -27,6 +27,7 @@ public class ZMartProcessorApp {
         MockDataProducer.producePurchaseData();
 
 
+        StreamsConfig streamsConfig = new StreamsConfig(getProperties());
         Deserializer<String> stringDeserializer = Serdes.String().deserializer();
         Serializer<String> stringSerializer = Serdes.String().serializer();
         Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
@@ -53,7 +54,7 @@ public class ZMartProcessorApp {
                 .addProcessor("rewards-printer", new KStreamPrinter("rewards"), "rewards-processor")
                 .addProcessor("patterns-printer", new KStreamPrinter("pattens"), "patterns-processor");
 
-        KafkaStreams kafkaStreams = new KafkaStreams(topology, getProperties());
+        KafkaStreams kafkaStreams = new KafkaStreams(topology, streamsConfig);
         System.out.println("ZMart Processor App Started");
         kafkaStreams.start();
         Thread.sleep(35000);

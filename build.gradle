@@ -24,6 +24,8 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 ext {
+    gradleVersion = "4.8.1"
+    minJavaVersion = "8"
     kafkaVersion = '2.0.0'
 }
 mainClassName = "org.gradle.sample.Main" 

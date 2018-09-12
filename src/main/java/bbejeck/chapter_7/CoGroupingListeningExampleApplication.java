@@ -40,6 +40,7 @@ public class CoGroupingListeningExampleApplication {
 
     public static void main(String[] args) throws Exception {
 
+        StreamsConfig streamsConfig = new StreamsConfig(getProperties());
         Deserializer<String> stringDeserializer = Serdes.String().deserializer();
         Serializer<String> stringSerializer = Serdes.String().serializer();
         Serde<Tuple<List<ClickEvent>, List<StockTransaction>>> eventPerformanceTuple = StreamsSerdes.EventTransactionTupleSerde();
@@ -74,7 +75,7 @@ public class CoGroupingListeningExampleApplication {
 
         MockDataProducer.produceStockTransactionsAndDayTradingClickEvents(50, 100, 100, StockTransaction::getSymbol);
 
-        KafkaStreams kafkaStreams = new KafkaStreams(topology, getProperties());
+        KafkaStreams kafkaStreams = new KafkaStreams(topology, streamsConfig);
         kafkaStreams.setGlobalStateRestoreListener(new LoggingStateRestoreListener());
 
         kafkaStreams.setUncaughtExceptionHandler((thread, exception) ->

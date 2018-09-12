@@ -19,10 +19,13 @@ package bbejeck.chapter_3;
 import bbejeck.clients.producer.MockDataProducer;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.Consumed;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.Printed;
+import org.apache.kafka.streams.kstream.Produced;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +45,8 @@ public class KafkaStreamsYellingApp {
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "yelling_app_id");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 
+        StreamsConfig streamsConfig = new StreamsConfig(props);
+
         Serde<String> stringSerde = Serdes.String();
 
         StreamsBuilder builder = new StreamsBuilder();
@@ -49,13 +54,13 @@ public class KafkaStreamsYellingApp {
         KStream<String, String> simpleFirstStream = builder.stream("src-topic", Consumed.with(stringSerde, stringSerde));
 
 
-        KStream<String, String> upperCasedStream = simpleFirstStream.mapValues((ValueMapper<String, String>) String::toUpperCase);
+        KStream<String, String> upperCasedStream = simpleFirstStream.mapValues(String::toUpperCase);
 
         upperCasedStream.to( "out-topic", Produced.with(stringSerde, stringSerde));
         upperCasedStream.print(Printed.<String, String>toSysOut().withLabel("Yelling App"));
 
 
-        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), props);
+        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(),streamsConfig);
         LOG.info("Hello World Yelling App Started");
         kafkaStreams.start();
         Thread.sleep(35000);

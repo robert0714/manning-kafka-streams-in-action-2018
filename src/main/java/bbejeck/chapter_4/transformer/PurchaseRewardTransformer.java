@@ -41,11 +41,11 @@ public class PurchaseRewardTransformer implements ValueTransformer<Purchase, Rew
 
     }
 
-//    @Override
-//    @SuppressWarnings("deprecation")
-//    public RewardAccumulator punctuate(long timestamp) {
-//        return null;  //no-op null values not forwarded.
-//    }
+    @Override
+    @SuppressWarnings("deprecation")
+    public RewardAccumulator punctuate(long timestamp) {
+        return null;  //no-op null values not forwarded.
+    }
 
     @Override
     public void close() {

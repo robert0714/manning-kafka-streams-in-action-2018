@@ -11,6 +11,7 @@ import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StockPerformanceMultipleValuesTransformer implements Transformer<String, StockTransaction, KeyValue<String, List<KeyValue<String, StockPerformance>>>> {
@@ -30,32 +31,9 @@ public class StockPerformanceMultipleValuesTransformer implements Transformer<St
     @SuppressWarnings("unchecked")
     @Override
     public void init(ProcessorContext processorContext) {
-        // keep the processor context locally because we need it in punctuate() and commit()
         this.processorContext = processorContext;
-
-        // retrieve the key-value store named stateStoreName
         keyValueStore = (KeyValueStore) this.processorContext.getStateStore(stateStoreName);
-
-        // schedule a punctuate() method every 15000 milliseconds based on stream time
-        this.processorContext.schedule(15000, PunctuationType.STREAM_TIME,
-                (timestamp) -> {
-                    KeyValueIterator<String, StockPerformance> performanceIterator = keyValueStore.all();
-                    while (performanceIterator.hasNext()) {
-                        KeyValue<String, StockPerformance> keyValue = performanceIterator.next();
-                        StockPerformance stockPerformance = keyValue.value;
-
-                        if (stockPerformance != null) {
-                            if (stockPerformance.priceDifferential() >= differentialThreshold ||
-                                    stockPerformance.volumeDifferential() >= differentialThreshold) {
-                                processorContext.forward(keyValue.key, keyValue.value);
-                            }
-                        }
-                    }
-                    performanceIterator.close();
-
-                    // commit the current processing progress
-                    processorContext.commit();
-                });
+        this.processorContext.schedule(15000, PunctuationType.STREAM_TIME, this::punctuate);
     }
 
     @Override
@@ -74,6 +52,25 @@ public class StockPerformanceMultipleValuesTransformer implements Transformer<St
             keyValueStore.put(symbol, stockPerformance);
         }
         return null;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public KeyValue<String, List<KeyValue<String, StockPerformance>>> punctuate(long timestamp) {
+        List<KeyValue<String, StockPerformance>> stockPerformanceList = new ArrayList<>();
+        KeyValueIterator<String, StockPerformance> performanceIterator = keyValueStore.all();
+        while (performanceIterator.hasNext()) {
+            KeyValue<String, StockPerformance> keyValue = performanceIterator.next();
+            StockPerformance stockPerformance = keyValue.value;
+
+            if (stockPerformance != null) {
+                if (stockPerformance.priceDifferential() >= differentialThreshold ||
+                        stockPerformance.volumeDifferential() >= differentialThreshold) {
+                    stockPerformanceList.add(keyValue);
+                }
+            }
+        }
+        return stockPerformanceList.isEmpty() ? null : KeyValue.pair(null, stockPerformanceList);
     }
 
     @Override

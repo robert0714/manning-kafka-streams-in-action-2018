@@ -26,10 +26,10 @@ import bbejeck.util.serde.StreamsSerdes;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.Consumed;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Printed;
 import org.apache.kafka.streams.kstream.Produced;
@@ -50,6 +50,7 @@ public class ZMartKafkaStreamsAddStateApp {
 
     public static void main(String[] args) throws Exception {
         
+        StreamsConfig streamsConfig = new StreamsConfig(getProperties());
 
         Serde<Purchase> purchaseSerde = StreamsSerdes.PurchaseSerde();
         Serde<PurchasePattern> purchasePatternSerde = StreamsSerdes.PurchasePatternSerde();
@@ -91,9 +92,9 @@ public class ZMartKafkaStreamsAddStateApp {
         // used only to produce data for this application, not typical usage
         MockDataProducer.producePurchaseData();
 
-
+        
         LOG.info("Starting Adding State Example");
-        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), getProperties());
+        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(),streamsConfig);
         LOG.info("ZMart Adding State Application Started");
         kafkaStreams.cleanUp();
         kafkaStreams.start();

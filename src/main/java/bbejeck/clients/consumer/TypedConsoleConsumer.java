@@ -6,7 +6,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,7 +36,7 @@ public class TypedConsoleConsumer<K, V> {
         System.out.println("Consumer starting...");
         Runnable run = () -> {
             while (keepConsuming) {
-                ConsumerRecords<K, V> records = consumer.poll(Duration.ofMillis(5000));
+                ConsumerRecords<K, V> records = consumer.poll(5000);
                 for (ConsumerRecord<K, V> record : records) {
                     String message = String.format("TypedConsoleConsumer: key = %s value = %s with offset = %d partition = %d",
                             record.key(), record.value(), record.offset(), record.partition());

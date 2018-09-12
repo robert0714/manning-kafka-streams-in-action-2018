@@ -9,10 +9,10 @@ import bbejeck.util.serde.StreamsSerdes;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.Consumed;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.Printed;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.apache.kafka.streams.state.KeyValueBytesStoreSupplier;
@@ -28,6 +28,7 @@ public class StockPerformanceStreamsAndProcessorApplication {
     public static void main(String[] args) throws Exception {
 
 
+        StreamsConfig streamsConfig = new StreamsConfig(getProperties());
         Serde<String> stringSerde = Serdes.String();
         Serde<StockPerformance> stockPerformanceSerde = StreamsSerdes.StockPerformanceSerde();
         Serde<StockTransaction> stockTransactionSerde = StreamsSerdes.StockTransactionSerde();
@@ -51,7 +52,7 @@ public class StockPerformanceStreamsAndProcessorApplication {
         //.to(stringSerde, stockPerformanceSerde, "stock-performance");
 
 
-        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), getProperties());
+        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), streamsConfig);
         MockDataProducer.produceStockTransactionsWithKeyFunction(50, 50, 25, StockTransaction::getSymbol);
         System.out.println("Stock Analysis KStream/Process API App Started");
         kafkaStreams.cleanUp();

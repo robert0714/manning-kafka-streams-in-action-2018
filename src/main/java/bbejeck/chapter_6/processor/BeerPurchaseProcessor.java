@@ -3,7 +3,6 @@ package bbejeck.chapter_6.processor;
 import bbejeck.model.BeerPurchase;
 import bbejeck.model.Currency;
 import org.apache.kafka.streams.processor.AbstractProcessor;
-import org.apache.kafka.streams.processor.To;
 
 import java.text.DecimalFormat;
 
@@ -33,9 +32,9 @@ public class BeerPurchaseProcessor extends AbstractProcessor<String, BeerPurchas
             builder.currency(DOLLARS);
             builder.totalSale(Double.parseDouble(decimalFormat.format(transactionCurrency.convertToDollars(internationalSaleAmount))));
             dollarBeerPurchase = builder.build();
-            context().forward(key, dollarBeerPurchase, To.child(internationalSalesNode));
+            context().forward(key, dollarBeerPurchase, internationalSalesNode);
         } else {
-            context().forward(key, beerPurchase, To.child(domesticSalesNode));
+            context().forward(key, beerPurchase, domesticSalesNode);
         }
 
     }

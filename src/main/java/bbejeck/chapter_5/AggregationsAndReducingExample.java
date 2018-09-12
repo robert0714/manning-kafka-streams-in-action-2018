@@ -9,11 +9,16 @@ import bbejeck.util.serde.StreamsSerdes;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.Consumed;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.kstream.Materialized;
+import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.kstream.Serialized;
+import org.apache.kafka.streams.kstream.ValueMapper;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +38,9 @@ public class AggregationsAndReducingExample {
     private static Logger LOG = LoggerFactory.getLogger(AggregationsAndReducingExample.class);
 
     public static void main(String[] args) throws Exception {
+
+
+        StreamsConfig streamsConfig = new StreamsConfig(getProperties());
 
         Serde<String> stringSerde = Serdes.String();
         Serde<StockTransaction> stockTransactionSerde = StreamsSerdes.StockTransactionSerde();
@@ -78,7 +86,7 @@ public class AggregationsAndReducingExample {
 
 
 
-        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), getProperties());
+        KafkaStreams kafkaStreams = new KafkaStreams(builder.build(), streamsConfig);
         MockDataProducer.produceStockTransactions(15, 50, 25, false);
         LOG.info("First Reduction and Aggregation Example Application Started");
         kafkaStreams.start();
