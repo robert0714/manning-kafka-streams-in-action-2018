@@ -143,7 +143,8 @@ public class DataGenerator {
         Faker faker = new Faker();
         for (int i = 0; i < number; i++) {
             int numberShares = faker.number().numberBetween(100, 50000);
-            Customer customer = customers.get(faker.number().numberBetween(0, customers.size()));
+            int index = faker.number().numberBetween(0, customers.size());
+            Customer customer = customers.get(index);
             PublicTradedCompany company = companies.get(faker.number().numberBetween(0, companies.size()));
             Date transactionDate = timestampGenerator.get();
             StockTransaction transaction = StockTransaction.newBuilder().withCustomerId(customer.customerId).withTransactionTimestamp(transactionDate)

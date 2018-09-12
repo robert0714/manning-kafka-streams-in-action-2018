@@ -24,9 +24,9 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 ext {
-    gradleVersion = "4.8.1"
+    gradleVersion = "4.10"
     minJavaVersion = "8"
-    kafkaVersion = '2.0.0'
+    kafkaVersion = '1.0.2'
 }
 mainClassName = "org.gradle.sample.Main" 
 
@@ -161,7 +161,7 @@ task writeNewPom << {
     pom {
         project {
             groupId 'org.bbejeck'
-            artifactId 'test'
+            artifactId 'bbejeck-kafka-streams-in-action'
             version '1.0-SNAPSHOT'
             packaging 'jar'
         
@@ -202,7 +202,7 @@ dependencies {
     compile group: 'org.rocksdb', name: 'rocksdbjni', version: '5.3.6'
 
 
-    compile (group: 'com.github.javafaker', name: 'javafaker', version: '0.16') {
+    compile (group: 'com.github.javafaker', name: 'javafaker', version: '0.12') {
         exclude group:'ch.qos.logback'
         exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     }
@@ -224,6 +224,6 @@ dependencies {
         exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     }
 
-   testCompile group: 'org.scala-lang', name: 'scala-library-all', version: '2.12.4'
+   testCompile group: 'org.scala-lang', name: 'scala-library', version: '2.12.4'
 
 }
